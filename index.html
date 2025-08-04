@@ -14,30 +14,34 @@
   </head>
 
   <body>
-    <a-scene
-      mindar-image="imageTargetSrc: marker.mind; autoStart: true;"
-      device-orientation-permission-ui="enabled: true"
-      embedded
-      vr-mode-ui="enabled: false"
-      renderer="colorManagement: true, physicallyCorrectLights"
-    >
-      <a-assets timeout="10000">
-        <video id="my-video" src="video.mp4" autoplay muted loop playsinline crossorigin="anonymous"></video>
-      </a-assets>
+   <button id="startAR" style="position: absolute; z-index: 1000; top: 50%; left: 50%; transform: translate(-50%, -50%);">Start AR</button>
 
-      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+<a-scene id="arScene" style="display: none"
+    mindar-image="imageTargetSrc: marker.mind; autoStart: true;"
+    device-orientation-permission-ui="enabled: true"
+    embedded
+    vr-mode-ui="enabled: false"
+    renderer="colorManagement: true, physicallyCorrectLights"
+>
+  <a-assets timeout="10000">
+    <video id="my-video" src="video.mp4" autoplay muted loop playsinline crossorigin="anonymous"></video>
+  </a-assets>
+  <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+  <a-entity mindar-image-target="targetIndex: 0">
+    <a-video src="#my-video" width="1.5" height="0.85" position="0 0 0"></a-video>
+  </a-entity>
+</a-scene>
+<script>
+  document.getElementById("startAR").addEventListener("click", () => {
+    document.getElementById("arScene").style.display = "block";
+    document.getElementById("startAR").style.display = "none";
+  });
+  // Fallback for video autoplay on mobile
+  document.body.addEventListener("click", () => {
+    const video = document.querySelector("#my-video");
+    if (video && video.paused) video.play();
+  });
+</script>
 
-      <a-entity mindar-image-target="targetIndex: 0">
-        <a-video src="#my-video" width="1.5" height="0.85" position="0 0 0"></a-video>
-      </a-entity>
-    </a-scene>
-
-    <!-- 👇 Fallback for video autoplay -->
-    <script>
-      document.body.addEventListener("click", () => {
-        const video = document.querySelector("#my-video");
-        if (video.paused) video.play();
-      });
-    </script>
   </body>
 </html>
