@@ -1,54 +1,61 @@
 <!DOCTYPE html>
 <html>
-<head>
-  <meta charset="utf-8">
-  <title>AR Video on Image</title>
-  <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
-  <style>
-    body, html { margin: 0; overflow: hidden; }
-    #my-video { display: none; }
-  </style>
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <title>AR Video on Image</title>
 
+    <!-- A-Frame -->
+    <script src="https://aframe.io/releases/1.2.0/aframe.min.js"></script>
 
-<body>
-  <h1 style="text-align: center;">AR Video on Image Target</h1>
+    <!-- MindAR via CDN (use this, not local copy) -->
+    <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.1.4/dist/mindar-image-aframe.prod.js"></script>
 
-  <a-scene
-    mindar-image="imageTargetSrc: marker.mind; autoStart: true;"
-    embedded
-    vr-mode-ui="enabled: false"
-    device-orientation-permission-ui="enabled: true"
-    renderer="colorManagement: true, physicallyCorrectLights">
+    <style>
+      body, html {
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
+      }
+    </style>
+  </head>
 
-    <a-assets timeout="10000">
-      <video id="my-video" src="video.mp4" autoplay muted loop playsinline crossorigin="anonymous"></video>
-    </a-assets>
+  <body>
+    <a-scene
+      mindar-image="imageTargetSrc: marker.mind; autoStart: true"
+      embedded
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: true"
+      renderer="colorManagement: true, physicallyCorrectLights"
+    >
+      <a-assets timeout="10000">
+        <video
+          id="my-video"
+          src="video.mp4"
+          autoplay
+          muted
+          loop
+          playsinline
+          crossorigin="anonymous"
+        ></video>
+      </a-assets>
 
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
+      <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
-    <a-entity mindar-image-target="targetIndex: 0">
-      <a-video
-        src="#my-video"
-        width="1.5"
-        height="0.85"
-        position="0 0 0">
-      </a-video>
-    </a-entity>
-  </a-scene>
+      <a-entity mindar-image-target="targetIndex: 0">
+        <a-video
+          src="#my-video"
+          width="1.5"
+          height="0.85"
+          position="0 0 0"
+        ></a-video>
+      </a-entity>
+    </a-scene>
 
-  <!-- ✅ Moved OUTSIDE <a-scene> -->
-  <script>
-    AFRAME.scenes[0].addEventListener("loaded", () => {
-      const video = document.querySelector("#my-video");
-      video.play().catch(err => console.warn("Video play blocked", err));
-    });
-
-    document.body.addEventListener("click", () => {
-      const video = document.querySelector("#my-video");
-      if (video.paused) video.play();
-    });
-  </script>
-</body>
+    <script>
+      document.body.addEventListener("click", () => {
+        const video = document.querySelector("#my-video");
+        video.play();
+      });
+    </script>
+  </body>
 </html>
