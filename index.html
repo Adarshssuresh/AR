@@ -20,6 +20,13 @@
     vr-mode-ui="enabled: false"
     device-orientation-permission-ui="enabled: true"
     renderer="colorManagement: true, physicallyCorrectLights">
+    <script>
+  AFRAME.scenes[0].addEventListener("loaded", () => {
+    const video = document.querySelector("#my-video");
+    video.play().catch(err => console.warn("Video play blocked", err));
+  });
+</script>
+
 
     <a-assets timeout="10000">
       <video id="my-video" src="video.mp4" autoplay muted loop playsinline crossorigin="anonymous"></video>
