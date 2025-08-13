@@ -1,103 +1,63 @@
-<!DOCTYPE html>
 <html>
   <head>
-    <meta charset="utf-8">
-    <title>MindAR - AR Plane on Marker</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-    <!-- Load A-Frame and MindAR -->
     <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-
     <style>
-      body, html {
-        margin: 0;
-        padding: 0;
-        overflow: hidden;
-        width: 100%;
-        height: 100%;
-      }
+      body { margin: 0; overflow: hidden; }
+      video { display: none; }
     </style>
   </head>
-
   <body>
-    <a-scene
-      mindar-image="imageTargetSrc: target.mind;"
-      embedded
-      vr-mode-ui="enabled: false"
-      device-orientation-permission-ui="enabled: true"
-      renderer="colorManagement: true, physicallyCorrectLights">
+    <!-- Your hidden video -->
+    <video id="myvideo" autoplay loop muted playsinline>
+      <source src="myvideo.mp4" type="video/mp4">
+    </video>
 
-      <a-assets></a-assets>
+    <!-- MindAR scene -->
+    <a-scene
+      mindar-image="imageTargetSrc: mytarget.mind;"
+      vr-mode-ui="enabled: false"
+      device-orientation-permission-ui="enabled: false"
+      embedded
+    >
+      <a-assets>
+        <video id="vid" src="myvideo.mp4" preload="auto" loop muted playsinline></video>
+      </a-assets>
 
       <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
 
+      <!-- AR Video plane -->
       <a-entity mindar-image-target="targetIndex: 0">
-        <a-plane 
-          color="blue" 
-          opacity="0.5" 
-          position="0 0 0" 
-          height="0.552" 
-          width="1">
-        </a-plane>
+        <a-video
+          src="#vid"
+          width="1"
+          height="0.5625"
+          position="0 0 0"
+          rotation="0 0 0"
+        ></a-video>
       </a-entity>
     </a-scene>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        const videoEl = document.querySelector("#vid");
+        const sceneEl = document.querySelector("a-scene");
+
+        sceneEl.addEventListener("arReady", () => {
+          console.log("AR is ready");
+        });
+
+        sceneEl.addEventListener("targetFound", () => {
+          console.log("Target found, playing video");
+          videoEl.play();
+        });
+
+        sceneEl.addEventListener("targetLost", () => {
+          console.log("Target lost, pausing video");
+          videoEl.pause();
+        });
+      });
+    </script>
   </body>
-</html>
-<!DOCTYPE html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>My AR Video</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <script src="https://aframe.io/releases/1.5.0/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.5/dist/mindar-image-aframe.prod.js"></script>
-  <style>
-    body, html { margin: 0; overflow: hidden; height: 100%; }
-    #my-video { display: none; }
-  </style>
-</head>
-<body>
-  <a-scene 
-    mindar-image="imageTargetSrc: target.mind; showStats: true;" 
-    color-space="sRGB" 
-    renderer="colorManagement: true, physicallyCorrectLights" 
-    vr-mode-ui="enabled: false" 
-    device-orientation-permission-ui="enabled: true">
-
-    <!-- Assets -->
-    <a-assets timeout="10000">
-      <!-- Your marker preview image (optional for plane texture) -->
-      <img id="marker-preview" src="UI2.png" />
-
-      <!-- Your video -->
-      <video id="my-video" src="video.mp4" preload="auto" loop muted playsinline crossorigin="anonymous"></video>
-    </a-assets>
-
-    <!-- Camera -->
-    <a-camera position="0 0 0" look-controls="enabled: false"></a-camera>
-
-    <!-- AR Target -->
-    <a-entity mindar-image-target="targetIndex: 0">
-      <!-- Show marker image as plane (optional) -->
-      <a-plane src="#marker-preview" position="0 0 0" height="0.552" width="1"></a-plane>
-
-      <!-- Your video -->
-      <a-video 
-        src="#my-video" 
-        width="1.5" 
-        height="0.85" 
-        position="0 0 0.05">
-      </a-video>
-    </a-entity>
-  </a-scene>
-
-  <script>
-    // Autoplay fix for mobile: user must tap once
-    document.body.addEventListener("click", () => {
-      const vid = document.querySelector("#my-video");
-      if (vid.paused) vid.play();
-    });
-  </script>
-</body>
 </html>
